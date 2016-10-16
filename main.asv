@@ -3,12 +3,10 @@ clc;
 clear;
 sonar_traindata=load('data\sonar-train.txt');
 sonar_testdata=load('data\sonar-test.txt');
-d=10           %降维后的维度
+d=7             %降维后的维度
 %%*******************PCA**********************
 sonar_traindata_label=sonar_traindata(:,61);
 sonar_traindata_x=sonar_traindata(:,1:60);
-sonar_testdata_x=sonar_testdata(:,1:60);
-sonar_testdata_label=sonar_testdata(:,61);
 [train_size_row,train_size_columa]=size(sonar_traindata_x);
 
 %%中心化
@@ -30,12 +28,11 @@ end
 [SVD_W,SVD_S,SVD_V]=svd(sonar_traindata_x');    %是对原数据转置进行奇异值分解
 SVD_W=SVD_W(:,1:d)';
 
-
 %%*****************************ISOMAP*********************************
-k=6;     %6是最少的全连通
-[sonar_traindata_ISOx,sonar_testdata_ISOx]=isomap(sonar_traindata_x,sonar_testdata_x,k,d);
+[,sonar_testdata_SVDx]
 %**************************将数据投影到低维空间************************
-
+sonar_testdata_x=sonar_testdata(:,1:60);
+sonar_testdata_label=sonar_testdata(:,61);
 %%PCA投影
 sonar_traindata_PCAx= PCA_W * sonar_traindata_x';   %将训练数据投影到低维空间
 sonar_traindata_PCAx=sonar_traindata_PCAx';
@@ -58,9 +55,6 @@ sonar_PCA_acc=test_right_PCAnum/test_num
 SVD_label=one_n_n(sonar_traindata_SVDx,sonar_traindata_label,sonar_testdata_SVDx);
 test_right_SVDnum=sum((sonar_testdata_label - SVD_label)==0);
 sonar_SVD_acc=test_right_SVDnum/test_num    
- %%计算ISO精确度  
-ISO_label=one_n_n(sonar_traindata_ISOx,sonar_traindata_label,sonar_testdata_ISOx);
-test_right_ISOnum=sum((sonar_testdata_label - ISO_label)==0);
-sonar_ISO_acc=test_right_ISOnum/test_num   
+
 
 
