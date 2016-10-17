@@ -3,7 +3,7 @@ clc;
 clear;
 sonar_traindata=load('data\sonar-train.txt');
 sonar_testdata=load('data\sonar-test.txt');
-d=10           %降维后的维度
+d=30           %降维后的维度
 %%*******************PCA**********************
 sonar_traindata_label=sonar_traindata(:,61);
 sonar_traindata_x=sonar_traindata(:,1:60);
@@ -32,7 +32,7 @@ SVD_W=SVD_W(:,1:d)';
 
 
 %%*****************************ISOMAP*********************************
-k=6;     %6是最少的全连通
+k=6;     %6是最少的全连通,为什么k越大越准？？
 [sonar_traindata_ISOx,sonar_testdata_ISOx]=isomap(sonar_traindata_x,sonar_testdata_x,k,d);
 %**************************将数据投影到低维空间************************
 
@@ -63,4 +63,9 @@ ISO_label=one_n_n(sonar_traindata_ISOx,sonar_traindata_label,sonar_testdata_ISOx
 test_right_ISOnum=sum((sonar_testdata_label - ISO_label)==0);
 sonar_ISO_acc=test_right_ISOnum/test_num   
 
+
+%%直接最近邻精确度    49.51%
+test_label=one_n_n(sonar_traindata_x,sonar_traindata_label,sonar_testdata_x);
+test_right_num=sum((sonar_testdata_label - test_label)==0);
+sonar_acc=test_right_num/test_num
 
